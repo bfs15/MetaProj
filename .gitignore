@@ -1,3 +1,12 @@
+
+Release/
+Debug/
+doc/
+
+MetaProj
+MetaProj.mk
+MetaProj.txt
+
 # Prerequisites
 *.d
 
