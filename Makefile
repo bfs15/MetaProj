@@ -63,7 +63,7 @@ set_debug:
 
 assembly: set_assembly all
 set_assembly:
-	$(eval FLAGS = -S $(FLAGS))
+	$(eval CFLAGS = -S $(CFLAGS))
 
 rebuild: clean all
 
@@ -87,7 +87,7 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp $(INCDIR)/%.hpp
 	@echo 'Building file: $<'
 	@echo 'Invoking Compiler'
 	@mkdir -p $(BUILDDIR)
-	$(CC) $(CFLAGS) $(INC) ${GCC_ARGS} -c -fmessage-length=80 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
+	$(CC) $(CFLAGS) $(INC) ${CCARGS} -c -fmessage-length=80 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo
 
