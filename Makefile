@@ -13,7 +13,7 @@ WNO = -Wno-comment  -Wno-sign-compare
 CFLAGS = $(RELEASEFLAGS) $(WARN) $(WNO)
 
 LIKDIR=/usr/local/likwid
-INC := -I./include -I$(LIKDIR)/include 
+INC := -I./include -I./Grimoire/include -I$(LIKDIR)/include 
 # -llikwid
 LIB := -pthread -L lib -DLIKWID_PERFMON -lm -pthread
 
@@ -90,4 +90,3 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp $(INCDIR)/%.hpp
 	$(CC) $(CFLAGS) $(INC) ${CCARGS} -c -fmessage-length=80 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo
-

@@ -108,14 +108,14 @@ int main(int argc, char **argv)
 
 void calculateVarray(size_t size){
 	varray<double> A, B, X;
-	A.alloc_size(size);
-	B.alloc_size(size);
-	X.alloc_size(size);
+	A.alloc(size);
+	B.alloc(size);
+	X.alloc(size);
 	
 	LogM(Level::Information,
-	   "\nA.regEN() = "<< A.regEN() << "\n"
+	   "\nA.vecN() = "<< A.vecN() << "\n"
 	<< "A.size() = "<< A.size() << "\n"
-	<< "A.mSizeVecMem = "<< A.mSizeVecMem << "\n"
+	<< "A.sizeVecMem() = "<< A.sizeVecMem() << "\n"
 	<< "A.endVec() = "<< A.endVec() << "\n"
 	<< "\n");
 	
@@ -131,7 +131,7 @@ void calculateVarray(size_t size){
 	}
 	// loop what's left
 	// from A.end_v() to (size-1)
-	for (size_t i = A.vecEnd(); i < A.size(); i++) {
+	for (size_t i = A.remStart(); i < A.size(); i++) {
 		X[i] += A[i] * B[i];
 	}
 	

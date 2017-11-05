@@ -11,20 +11,23 @@
     <File Name="src/main.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
-    <File Name="include/io.hpp"/>
-    <File Name="include/bytes.h"/>
-    <File Name="include/Chronometer.hpp"/>
-    <File Name="include/varray.hpp"/>
-    <File Name="include/Matrix.hpp"/>
-    <File Name="include/gmstr.h"/>
-    <File Name="include/Logger.hpp"/>
     <File Name="include/main.hpp"/>
+  </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
+  <VirtualDirectory Name="MetaProj">
+    <File Name=".gitignore"/>
+    <File Name="LICENSE"/>
+    <File Name="MetaProj.project"/>
+    <File Name="doxyconfig"/>
+    <File Name="Makefile"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <GlobalSettings>
       <Compiler Options="-std=c++11 -Wno-comment" C_Options="" Assembler="">
-        <IncludePath Value="&quot;.&quot;"/>
+        <IncludePath Value="&quot;./&quot;"/>
         <IncludePath Value="&quot;./include&quot;"/>
+        <IncludePath Value="&quot;./Grimoire/include&quot;"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
@@ -111,13 +114,16 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
-  <VirtualDirectory Name="MetaProj">
-    <File Name=".gitignore"/>
-    <File Name="LICENSE"/>
-    <File Name="MetaProj.project"/>
-    <File Name="doxyconfig"/>
-    <File Name="Makefile"/>
+  <VirtualDirectory Name="Grimoire">
+    <VirtualDirectory Name="include">
+      <File Name="Grimoire/include/bytes.h"/>
+      <File Name="Grimoire/include/Chronometer.hpp"/>
+      <File Name="Grimoire/include/Double.h"/>
+      <File Name="Grimoire/include/gmstr.h"/>
+      <File Name="Grimoire/include/io.hpp"/>
+      <File Name="Grimoire/include/Logger.hpp"/>
+      <File Name="Grimoire/include/Matrix.hpp"/>
+      <File Name="Grimoire/include/varray.hpp"/>
+    </VirtualDirectory>
   </VirtualDirectory>
 </CodeLite_Project>
