@@ -115,6 +115,7 @@
     </Configuration>
   </Settings>
   <VirtualDirectory Name="Grimoire">
+    <File Name="Grimoire/README.md"/>
     <VirtualDirectory Name="include">
       <File Name="Grimoire/include/bytes.h"/>
       <File Name="Grimoire/include/Chronometer.hpp"/>
