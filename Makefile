@@ -1,21 +1,22 @@
 
-#compiler
-CC = g++ -std=c++11
+# Compiler
+CC = g++ -std=c++17
 EXT := cpp
 HEXT := hpp
 # Executable filename
-bin = MetaProj
+bin = MetaProj.exe
 # warnings and flags
 RELEASEFLAGS = -O3 -mavx -march=native -DNDEBUG
 DEBUGFLAGS = -O0 -g
-WARN = -Wall
+
+WARN = -Wall -Wextra
 WNO = -Wno-comment  -Wno-sign-compare
 CFLAGS = $(RELEASEFLAGS) $(WARN) $(WNO)
 
 LIKDIR=/usr/local/likwid
-INC := -I./include -I./Grimoire/include -I$(LIKDIR)/include 
-# -llikwid
-LIB := -pthread -L lib -DLIKWID_PERFMON -lm -pthread
+INC := -I./include -I./Grimoire/include -I$(LIKDIR)/include
+
+LIB := -pthread -L lib -DLIKWID_PERFMON -lm -pthread # -llikwid
 
 SRCDIR = src
 INCDIR = include
@@ -33,53 +34,60 @@ OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SRCS:.$(EXT)=.o))
 
 all: pre dirs list_srcnames $(bin)
 
+# preprocess
 pre:
 
+# make commands
+
+doc:
+	doxygen doxyconfig
+
+debug: set_debug all
+
+assembly: set_assembly all
+
+rebuild: clean all
+
+clean:
+	rm -rf  ./$(BUILDDIR)/*.o  ./$(BUILDDIR)/*.d
+
+cleanBin:
+	rm -rf  $(bin)
+
+cleanDoc:
+	rm -rf doc/
+
+cleanAll: clean cleanBin cleanDoc
+
+# create directories
 dirs:
 	@mkdir -p $(BUILDDIR)
 	@mkdir -p $(INCDIR)
 	@mkdir -p $(SRCDIR)
-	@echo SRCS
-	@echo $(SRCS)
-	@echo HEADERS
-	@echo $(HEADERS)
-	@echo OBJECTS
-	@echo $(OBJECTS)
 
 list_srcnames:
 	@echo
+	@echo "Only source files with matching header names will be compiled"
 	@echo "Found source files to compile:"
 	@echo $(SRCNAMES)
 	@echo "Found header files:"
 	@echo $(HNAMES)
 	@echo
 
-doc:
-	doxygen doxyconfig
 
-debug: set_debug all
+
+# internal rules
 set_debug:
 	$(eval CFLAGS = $(DEBUGFLAGS) $(WARN) $(WNO))
 
-assembly: set_assembly all
 set_assembly:
-	$(eval CFLAGS = -S $(CFLAGS))
-
-rebuild: clean all
-
-clean:
-	rm -rf  ./$(BUILDDIR)/*.o  ./$(BUILDDIR)/*.d
-cleanBin:
-	rm -rf  $(bin)
-cleanDoc:
-	rm -rf doc/
-cleanAll: clean cleanBin cleanDoc
+	$(eval CFLAGS = -S -masm=intel $(CFLAGS))
 
 
 $(bin): $(OBJECTS)
 	@echo 'Building target: $@'
 	@echo 'Invoking Linker'
-	$(CC) $^ -o "$(bin)" $(LIB)
+	$(CC) $^ -o "$(bin)" $(LIB) $(INC)
 	@echo 'Finished building target: $@'
 	@echo
 
@@ -87,6 +95,6 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp $(INCDIR)/%.hpp
 	@echo 'Building file: $<'
 	@echo 'Invoking Compiler'
 	@mkdir -p $(BUILDDIR)
-	$(CC) $(CFLAGS) $(INC) ${CCARGS} -c -fmessage-length=80 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
+	$(CC) $(CFLAGS) $(LIB) $(INC) ${CCARGS} -c -fmessage-length=80 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo
