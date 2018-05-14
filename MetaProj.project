@@ -22,9 +22,22 @@
     <File Name="doxyconfig"/>
     <File Name="Makefile"/>
   </VirtualDirectory>
+  <VirtualDirectory Name="Grimoire">
+    <File Name="Grimoire/README.md"/>
+    <VirtualDirectory Name="include">
+      <File Name="Grimoire/include/bytes.h"/>
+      <File Name="Grimoire/include/Chronometer.hpp"/>
+      <File Name="Grimoire/include/Double.h"/>
+      <File Name="Grimoire/include/gmstr.h"/>
+      <File Name="Grimoire/include/io.hpp"/>
+      <File Name="Grimoire/include/Logger.hpp"/>
+      <File Name="Grimoire/include/Matrix.hpp"/>
+      <File Name="Grimoire/include/varray.hpp"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
   <Settings Type="Executable">
     <GlobalSettings>
-      <Compiler Options="-std=c++11 -Wno-comment" C_Options="" Assembler="">
+      <Compiler Options="-std=c++17 -Wno-comment" C_Options="" Assembler="">
         <IncludePath Value="&quot;./&quot;"/>
         <IncludePath Value="&quot;./include&quot;"/>
         <IncludePath Value="&quot;./Grimoire/include&quot;"/>
@@ -114,17 +127,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <VirtualDirectory Name="Grimoire">
-    <File Name="Grimoire/README.md"/>
-    <VirtualDirectory Name="include">
-      <File Name="Grimoire/include/bytes.h"/>
-      <File Name="Grimoire/include/Chronometer.hpp"/>
-      <File Name="Grimoire/include/Double.h"/>
-      <File Name="Grimoire/include/gmstr.h"/>
-      <File Name="Grimoire/include/io.hpp"/>
-      <File Name="Grimoire/include/Logger.hpp"/>
-      <File Name="Grimoire/include/Matrix.hpp"/>
-      <File Name="Grimoire/include/varray.hpp"/>
-    </VirtualDirectory>
-  </VirtualDirectory>
 </CodeLite_Project>

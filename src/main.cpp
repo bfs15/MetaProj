@@ -101,6 +101,17 @@ int main(int argc, char **argv)
 	std::cout <<"Calculate varray of size "<< value << "\n";
 	calculateVarray(value);
 
+	gm::Chronometer<10> timer;
+	timer.start();
+	size_t size = 8*4096*4096;
+	size_t iterations = 128;
+	for(size_t i = 0; i < iterations; ++i){
+		gm::varray<double> a(size);
+		a[0] = 1;
+		a[size-1] = 1;
+	}
+
+	std::cout << "alocating " << size << "; took " << timer.tick()/(double)iterations << std::endl;
 
 	// Cleanup //
 
