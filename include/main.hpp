@@ -22,9 +22,6 @@ Description
 #include "io.hpp"
 #include "Logger.hpp"
 
-using namespace std;
-using namespace gm;
-
 int main(int argc, char** argv);
 
 void args_err(char** argv);

@@ -12,9 +12,9 @@ int main(int argc, char **argv)
 	int c;
 	char* inputFile = NULL;
 	char* outputFile = NULL;
-	ifstream in_f;
-	ofstream o_f;
-	streambuf* coutbuf = cout.rdbuf(); //save old buf;
+	std::ifstream in_f;
+	std::ofstream o_f;
+	std::streambuf* coutbuf = std::cout.rdbuf(); //save old buf;
 	bool a = false;
 	bool v = false;
 	size_t minI = 0, maxI = 16*1024;
@@ -25,80 +25,80 @@ int main(int argc, char **argv)
 			case 'i':
 				inputFile = optarg;
 				in_f.open(inputFile);
-				cin.rdbuf(in_f.rdbuf()); //redirect
+				std::cin.rdbuf(in_f.rdbuf()); //redirect
 				break;
 			case 'o':
 				outputFile = optarg;
 				o_f.open(outputFile);
-				cout.rdbuf(o_f.rdbuf()); //redirect
+				std::cout.rdbuf(o_f.rdbuf()); //redirect
 				break;
 			case 'a':	// Generic argument
 				a = true;
 				break;
 			case 'v':
 				v = true;
-				value = stol(optarg);
+				value = std::stol(optarg);
 				break;
 			case ':':
 			// missing option argument
-				LogM(Level::Error, argv[0] << ": option '-"<< optopt <<"' requires an argument\n");
+				LogM(gm::LogLvl::Error, argv[0] << ": option '-"<< optopt <<"' requires an argument\n");
 			default:
 			args_err(argv);
 		}
 	}
-	cout << LevelMax <<" levels of logging\n";
-	vector<Level> Lvls;
-	for(int i = 0; i <= LevelMax; i++){
-		Lvls.push_back((Level)i);
+	std::cout << gm::LogLvlMax <<" levels of logging\n";
+	std::vector<gm::LogLvl> Lvls;
+	for(int i = 0; i <= gm::LogLvlMax; i++){
+		Lvls.push_back((gm::LogLvl)i);
 	}
 
 	/**/
 	for(auto lvl : Lvls){
-		cout <<"logger is now "<< lvl << "\n";
-		logger.setLevel(lvl);
-		LogM(Level::Fatal, "Fatal msg\n");
-		LogM(Level::Critical, "Crit msg\n");
-		LogM(Level::Error, "Error msg\n");
-		LogM(Level::Warning, "Warning msg\n");
-		LogM(Level::Notification, "Notification msg\n");
-		LogM(Level::Information, "Information msg\n");
+		std::cout <<"logger is now "<< lvl << "\n";
+		gm::logger.logLvlSet(lvl);
+		LogM(gm::LogLvl::Fatal, "Fatal msg\n");
+		LogM(gm::LogLvl::Critical, "Critical msg\n");
+		LogM(gm::LogLvl::Error, "Error msg\n");
+		LogM(gm::LogLvl::Warn, "Warn msg\n");
+		LogM(gm::LogLvl::Note, "Note msg\n");
+		LogM(gm::LogLvl::Info, "Info msg\n");
 		LogDEBUG("Debug msg\n");
-		cout << endl;
+		std::cout << std::endl;
 	}/**/
 
-	string err_range_msg
-	= "value out of range, enter "+ to_string(minI) +" < value < "+ to_string(maxI);
+	std::string err_range_msg
+	= "value out of range, enter "+ std::to_string(minI) +" < value < "+ std::to_string(maxI);
 
 	if(v){
-		if(!inRange(value, minI, maxI)){
-			LogM(Level::Error, "-v "<< value <<" "<< err_range_msg);
+		if(!gm::inRange(value, minI, maxI)){
+			LogM(gm::LogLvl::Error, "-v "<< value <<" "<< err_range_msg);
 			args_err(argv);
 		}
 	} else {
 		if(inputFile == NULL)
-			cout << "Enter a number: ";
-		readInRange(cin, value, minI, maxI, cout, err_range_msg);
-		clearln(cin);
+			std::cout << "Enter a number: ";
+		gm::readInRange(std::cin, value, minI, maxI, std::cout, err_range_msg);
+		gm::clearln(std::cin);
 	}
 	in_f.close();
 
 
-	string response;
+	std::string response;
 	/**
 	cout <<"What is your name?"<< "\n";
 	readline(cin, response);
 	cout <<"Hi "<< response <<"."<< "\n";
 	/**/
 	if(a){
-		cout <<"Do you like pointers?"<< "\n";
-		readline(cin, response);
+		std::cout <<"Do you like pointers?"<< "\n";
+		gm::readline(std::cin, response);
 	}
 
-	cout << "varray need alignment of " << sizeof(Vec<double>) << endl;
+	std::cout << "varray needs alignment of " << sizeof(gm::Vec<double>) << std::endl;
 
-	cout << "register has " << regSize(Vec<double>) << " doubles" << endl;
+	std::cout << "a register has " << regSize(double) << " doubles" << std::endl;
 
-	cout <<"Calculate varray of size "<< value << "\n";
+	std::cout <<"Calculate varray of size "<< value << "\n";
 	calculateVarray(value);
 
 
@@ -106,13 +106,13 @@ int main(int argc, char **argv)
 
 	//LIKWID_MARKER_CLOSE;
 
-	cout.rdbuf(coutbuf); //redirect
+	std::cout.rdbuf(coutbuf); //redirect
 
 	return 0;
 }
 
 void calculateVarray(size_t size){
-	varray<double> A(size), B(size), X(size);
+	gm::varray<double> A(size), B(size), X(size);
 /**
 	varray<double> A, B, X;
 
@@ -120,18 +120,24 @@ void calculateVarray(size_t size){
 	B.alloc(size);
 	X.alloc(size);
 /**/
-	LogM(Level::Information,
+
+	gm::logger << "hey " << "\n";
+
+
+	gm::logger << "hey " << std::endl;
+	gm::logger << std::endl;
+
+	LogM(gm::LogLvl::Info,
 	   "reg_dn = " << regSize(double) << "\n"
 	<< "dn = " << A.vecN() << "\n"
 	<< "size = " << A.size() << "\n"
 	<< "sizeV = " << A.sizeV() << "\n"
 	<< "endVI = " << A.endVI() << "\n"
-	<< "first elem addr = " << &A[0] << "\n"
-	<< "first elem addr = " << &A.atv(0) << "\n"
-	<< "second Vec addr = " << &A.atv(1) << "\n"
+	<< "first Vec addr = " << &A.atv(0) << "\n"
+	<< "second Vec addr = " << &A.atv(1) << std::endl
 	);
 
-	LogM(Level::Information, "\n" <<"Initializing varrays "<< "\n");
+	LogM(gm::LogLvl::Info, "\n" <<"Initializing varrays "<< "\n");
 
 	for (size_t i = 0; i < A.size(); ++i) {
 		A[i] = (rand() % 100 + 1);
@@ -145,63 +151,65 @@ void calculateVarray(size_t size){
 	size_t endVecIndex;
 	size_t beginVI = A.loop(startI, endI, endVecIndex);
 
-	LogM(Level::Information, "\nExample of 3 ways of looping with vectorization "<< "\n"
+	LogM(gm::LogLvl::Info, "\nExample of 3 ways of looping with vectorization "<< "\n"
 	<<"startI = "<< startI <<" endI = "<< endI << "\n");
 
-	LogM(Level::Information, "\n" <<"loop start before vectorization starts"<< "\n"
+	LogM(gm::LogLvl::Info, "\n" <<"loop start before vectorization starts"<< "\n"
 	<<"from = "<< startI <<" to = "<< A.beginVI(startI) << "\n");
 
-	LogM(Level::Information, "\n" <<"loop with vectorization starts"<< "\n"
+	LogM(gm::LogLvl::Info, "\n" <<"loop with vectorization starts"<< "\n"
 	<<"i = "<< A.beginVI(startI) <<"; i < "<< A.endVI(endI)*A.vecN() << "; ++i" << "\n");
 
-	LogM(Level::Information, "\n" <<"loop remainder without vectorization"<< "\n"
+	LogM(gm::LogLvl::Info, "\n" <<"loop remainder without vectorization"<< "\n"
 	<<"from = "<< A.endVI(endI)*A.vecN() <<" to = "<< endI << "\n"
 	<< "if 'from' > 'to' there is no looping" << "\n");
 
+	//for(size_t i = 0; i < A.vecN(); ++i)
+	//	X.atv(vi).v[i] += A.atv(vi).v[i] * B.atv(vi).v[i];
+/**/
 // Way 1
-	LogM(Level::Information, "Way 1 \n");
+	LogM(gm::LogLvl::Info, "Way 1 \n");
 
-	vectorized_loop(A, i, startI, endI, {
-		X[i] += A[i] * B[i];
-	})
-
+	vectorized_loop(A, 0,size-1,
+		i,  {
+			X[i] += A[i] * B[i];
+		},
+		vi,  {
+			X.atv(vi).v += A.atv(vi).v * B.atv(vi).v;
+		}
+	)
+/**/
 // Way 2
-	/**/
+	LogM(gm::LogLvl::Info, "Way 2 \n");
+
 	for (size_t i = startI; i < beginVI; ++i) {
 		X[i] += A[i] * B[i];
 	}
-	/**
 	for (size_t vi = beginVI/A.vecN(); vi < endVecIndex; ++vi) {
 		X.atv(vi).v += A.atv(vi).v * B.atv(vi).v;
 	}
-	/**/
 	for (size_t i = endVecIndex*A.vecN(); i <= endI; ++i) {
 		X[i] += A[i] * B[i];
 	}
-
+/**/
 // Way 3
+	LogM(gm::LogLvl::Info, "Way 3 \n");
 
 	for (size_t i = startI; i < A.beginVI(startI); ++i) {
 		X[i] += A[i] * B[i];
 	}
-	/**/
 	for (size_t vi = A.beginVI(startI)/A.vecN();
 	vi < A.endVI(endI); ++vi) {
-		cout << &X.atv(vi).v << endl;
-		cout << &X.atv(vi) << endl;
-		//for(size_t i = 0; i < A.vecN(); ++i)
-		//	X.atv(vi).v[i] += A.atv(vi).v[i] * B.atv(vi).v[i];
 		X.atv(vi).v += A.atv(vi).v * B.atv(vi).v;
 	}
-	/**/
 	for (size_t i = A.endVI(endI)*A.vecN(); i <= endI; ++i) {
 		X[i] += A[i] * B[i];
 	}
-	/**/
+/**/
 }
 }
 
 void args_err(char** argv){
-	LogM(Level::Error, "Usage: "<< argv[0] <<" [-i inputFile] [-o outputFile] [-a (sets a = true)] [-v value]\n");
+	LogM(gm::LogLvl::Error, "Usage: "<< argv[0] <<" [-i inputFile] [-o outputFile] [-a (sets a = true)] [-v value]\n");
 	exit(EXIT_FAILURE);
 }
