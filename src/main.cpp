@@ -3,18 +3,18 @@
 
 int main(int argc, char **argv)
 {
-	//LIKWID_MARKER_INIT;
+	LIKWID_MARKER_INIT;
 
 //	cout.precision(4);
 //	cout << scientific;
 	srand(time(NULL));
 
 	int c;
-	char* inputFile = NULL;
-	char* outputFile = NULL;
-	std::ifstream in_f;
-	std::ofstream o_f;
-	std::streambuf* coutbuf = std::cout.rdbuf(); //save old buf;
+	char* inFilename = NULL;
+	char* outFilename = NULL;
+	gm::redirectStreamToFile<std::istream, std::ifstream> inRedirect(std::cin);
+	gm::redirectStreamToFile<std::ostream, std::ofstream> outRedirect(std::cout);
+
 	bool a = false;
 	bool v = false;
 	size_t minI = 0, maxI = 16*1024;
@@ -23,14 +23,12 @@ int main(int argc, char **argv)
 	while (( c = getopt(argc, argv, "i:o:av:")) != -1){
 		switch (c){
 			case 'i':
-				inputFile = optarg;
-				in_f.open(inputFile);
-				std::cin.rdbuf(in_f.rdbuf()); //redirect
+				inFilename = optarg;
+				inRedirect.file(inFilename);
 				break;
 			case 'o':
-				outputFile = optarg;
-				o_f.open(outputFile);
-				std::cout.rdbuf(o_f.rdbuf()); //redirect
+				outFilename = optarg;
+				outRedirect.file(outFilename);
 				break;
 			case 'a':	// Generic argument
 				a = true;
@@ -75,12 +73,12 @@ int main(int argc, char **argv)
 			args_err(argv);
 		}
 	} else {
-		if(inputFile == NULL)
+		if(inFilename == NULL)
 			std::cout << "Enter a number: ";
 		gm::readInRange(std::cin, value, minI, maxI, std::cout, err_range_msg);
 		gm::clearln(std::cin);
 	}
-	in_f.close();
+	inRedirect.close();
 
 
 	std::string response;
@@ -115,9 +113,7 @@ int main(int argc, char **argv)
 
 	// Cleanup //
 
-	//LIKWID_MARKER_CLOSE;
-
-	std::cout.rdbuf(coutbuf); //redirect
+	LIKWID_MARKER_CLOSE;
 
 	return 0;
 }
