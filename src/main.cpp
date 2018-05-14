@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 				break;
 			case ':':
 			// missing option argument
-				LogM(gm::LogLvl::Error, argv[0] << ": option '-"<< optopt <<"' requires an argument\n");
+				std::cerr << argv[0] << ": option '-"<< optopt <<"' requires an argument" << std::endl;
 			default:
 			args_err(argv);
 		}
@@ -53,14 +53,28 @@ int main(int argc, char **argv)
 	/**/
 	for(auto lvl : Lvls){
 		std::cout <<"logger is now "<< lvl << "\n";
-		gm::logger.logLvlSet(lvl);
-		LogM(gm::LogLvl::Fatal, "Fatal msg\n");
-		LogM(gm::LogLvl::Critical, "Critical msg\n");
-		LogM(gm::LogLvl::Error, "Error msg\n");
-		LogM(gm::LogLvl::Warn, "Warn msg\n");
-		LogM(gm::LogLvl::Note, "Note msg\n");
-		LogM(gm::LogLvl::Info, "Info msg\n");
-		LogDEBUG("Debug msg\n");
+		gm::logger.setLvl(lvl);
+
+		gm::logger.msg(gm::LogLvl::Fatal)
+		<< "Fatal msg" << std::endl;
+
+		gm::logger.msg(gm::LogLvl::Critical)
+		<< "Critical msg" << std::endl;
+
+		gm::logger.msg(gm::LogLvl::Error)
+		<< "Error msg" << std::endl;
+
+		gm::logger.msg(gm::LogLvl::Warn)
+		<< "Warn msg" << std::endl;
+
+		gm::logger.msg(gm::LogLvl::Note)
+		<< "Note msg" << std::endl;
+
+		gm::logger.msg(gm::LogLvl::Info)
+		<< "Info msg" << std::endl;
+
+		LogDEBUG(gm::logger, "Debug msg" << std::endl)
+
 		std::cout << std::endl;
 	}/**/
 
@@ -69,7 +83,7 @@ int main(int argc, char **argv)
 
 	if(v){
 		if(!gm::inRange(value, minI, maxI)){
-			LogM(gm::LogLvl::Error, "-v "<< value <<" "<< err_range_msg);
+			std::cout << "-v "<< value <<" "<< err_range_msg;
 			args_err(argv);
 		}
 	} else {
@@ -128,23 +142,16 @@ void calculateVarray(size_t size){
 	X.alloc(size);
 /**/
 
-	gm::logger << "hey " << "\n";
-
-
-	gm::logger << "hey " << std::endl;
-	gm::logger << std::endl;
-
-	LogM(gm::LogLvl::Info,
-	   "reg_dn = " << regSize(double) << "\n"
+	gm::logger.msg(gm::LogLvl::Info)
+	<< "reg_dn = " << regSize(double) << "\n"
 	<< "dn = " << A.vecN() << "\n"
 	<< "size = " << A.size() << "\n"
 	<< "sizeV = " << A.sizeV() << "\n"
 	<< "endVI = " << A.endVI() << "\n"
 	<< "first Vec addr = " << &A.atv(0) << "\n"
-	<< "second Vec addr = " << &A.atv(1) << std::endl
-	);
+	<< "second Vec addr = " << &A.atv(1) << std::endl;
 
-	LogM(gm::LogLvl::Info, "\n" <<"Initializing varrays "<< "\n");
+	std::cout << "\n" << "Initializing varrays " << std::endl;
 
 	for (size_t i = 0; i < A.size(); ++i) {
 		A[i] = (rand() % 100 + 1);
@@ -158,24 +165,24 @@ void calculateVarray(size_t size){
 	size_t endVecIndex;
 	size_t beginVI = A.loop(startI, endI, endVecIndex);
 
-	LogM(gm::LogLvl::Info, "\nExample of 3 ways of looping with vectorization "<< "\n"
-	<<"startI = "<< startI <<" endI = "<< endI << "\n");
+	std::cout << "\nExample of 3 ways of looping with vectorization "<< "\n"
+	<<"startI = "<< startI <<" endI = "<< endI << std::endl;
 
-	LogM(gm::LogLvl::Info, "\n" <<"loop start before vectorization starts"<< "\n"
-	<<"from = "<< startI <<" to = "<< A.beginVI(startI) << "\n");
+	std::cout << "\n" <<"loop start before vectorization starts"<< "\n"
+	<<"from = "<< startI <<" to = "<< A.beginVI(startI) << std::endl;
 
-	LogM(gm::LogLvl::Info, "\n" <<"loop with vectorization starts"<< "\n"
-	<<"i = "<< A.beginVI(startI) <<"; i < "<< A.endVI(endI)*A.vecN() << "; ++i" << "\n");
+	std::cout << "\n" <<"loop with vectorization starts"<< "\n"
+	<<"i = "<< A.beginVI(startI) <<"; i < "<< A.endVI(endI)*A.vecN() << "; ++i" << std::endl;
 
-	LogM(gm::LogLvl::Info, "\n" <<"loop remainder without vectorization"<< "\n"
+	std::cout << "\n" <<"loop remainder without vectorization"<< "\n"
 	<<"from = "<< A.endVI(endI)*A.vecN() <<" to = "<< endI << "\n"
-	<< "if 'from' > 'to' there is no looping" << "\n");
+	<< "if 'from' > 'to' there is no looping" << std::endl;
 
 	//for(size_t i = 0; i < A.vecN(); ++i)
 	//	X.atv(vi).v[i] += A.atv(vi).v[i] * B.atv(vi).v[i];
 /**/
 // Way 1
-	LogM(gm::LogLvl::Info, "Way 1 \n");
+	std::cout << "Way 1" << std::endl;
 
 	vectorized_loop(A, 0,size-1,
 		i,  {
@@ -187,7 +194,7 @@ void calculateVarray(size_t size){
 	)
 /**/
 // Way 2
-	LogM(gm::LogLvl::Info, "Way 2 \n");
+	std::cout << "Way 2" << std::endl;
 
 	for (size_t i = startI; i < beginVI; ++i) {
 		X[i] += A[i] * B[i];
@@ -200,7 +207,7 @@ void calculateVarray(size_t size){
 	}
 /**/
 // Way 3
-	LogM(gm::LogLvl::Info, "Way 3 \n");
+	std::cout << "Way 3" << std::endl;
 
 	for (size_t i = startI; i < A.beginVI(startI); ++i) {
 		X[i] += A[i] * B[i];
@@ -217,6 +224,6 @@ void calculateVarray(size_t size){
 }
 
 void args_err(char** argv){
-	LogM(gm::LogLvl::Error, "Usage: "<< argv[0] <<" [-i inputFile] [-o outputFile] [-a (sets a = true)] [-v value]\n");
+	std::cerr << "Usage: "<< argv[0] <<" [-i inputFile] [-o outputFile] [-a (sets a = true)] [-v value]" << std::endl;
 	exit(EXIT_FAILURE);
 }
