@@ -11,12 +11,13 @@ DEBUGFLAGS = -O0 -g
 
 WARN = -Wall -Wextra
 WNO = -Wno-comment  -Wno-sign-compare
-CFLAGS = $(RELEASEFLAGS) $(WARN) $(WNO)
+CFLAGS = $(RELEASEFLAGS) $(WARN) $(WNO) # -DGMVECTOR
 
 LIKDIR=/usr/local/likwid
 INC := -I./include -I./Grimoire/include -I$(LIKDIR)/include
 
-LIB := -pthread -L lib -DLIKWID_PERFMON -lm -pthread # -llikwid
+LIBDIR := ./
+LIB := -lm -pthread -L$(LIBDIR)  # -llikwid -DLIKWID_PERFMON
 
 SRCDIR = src
 INCDIR = include

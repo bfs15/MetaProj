@@ -110,15 +110,17 @@ int main(int argc, char **argv)
 
 	std::cout << "a register has " << regSize(double) << " doubles" << std::endl;
 
-	std::cout <<"Calculate varray of size "<< value << "\n";
-	calculateVarray(value);
+	#ifndef STDVECTOR
+		std::cout <<"Calculate varray of size "<< value << "\n";
+		calculateVarray(value);
+	#endif
 
 	gm::Chronometer<10> timer;
 	timer.start();
 	size_t size = 8*4096*4096;
 	size_t iterations = 128;
 	for(size_t i = 0; i < iterations; ++i){
-		gm::varray<double> a(size);
+		numVector a(size);
 		a[0] = 1;
 		a[size-1] = 1;
 	}
@@ -133,9 +135,9 @@ int main(int argc, char **argv)
 }
 
 void calculateVarray(size_t size){
-	gm::varray<double> A(size), B(size), X(size);
+	numVector A(size), B(size), X(size);
 /**
-	varray<double> A, B, X;
+	numVector A, B, X;
 
 	A.alloc(size);
 	B.alloc(size);
@@ -148,10 +150,10 @@ void calculateVarray(size_t size){
 	<< "size = " << A.size() << "\n"
 	<< "sizeV = " << A.sizeV() << "\n"
 	<< "endVI = " << A.endVI() << "\n"
-	<< "first Vec addr = " << &A.atv(0) << "\n"
-	<< "second Vec addr = " << &A.atv(1) << std::endl;
+	<< "first Vec addr = " << &A.atV(0) << "\n"
+	<< "second Vec addr = " << &A.atV(1) << std::endl;
 
-	std::cout << "\n" << "Initializing varrays " << std::endl;
+	std::cout << "\n" << "Initializing arrays " << std::endl;
 
 	for (size_t i = 0; i < A.size(); ++i) {
 		A[i] = (rand() % 100 + 1);
@@ -179,17 +181,17 @@ void calculateVarray(size_t size){
 	<< "if 'from' > 'to' there is no looping" << std::endl;
 
 	//for(size_t i = 0; i < A.vecN(); ++i)
-	//	X.atv(vi).v[i] += A.atv(vi).v[i] * B.atv(vi).v[i];
+	//	X.atV(vi).v[i] += A.atV(vi).v[i] * B.atV(vi).v[i];
 /**/
 // Way 1
 	std::cout << "Way 1" << std::endl;
 
-	vectorized_loop(A, 0,size-1,
+	gm_vectorized_loop_(A, 0,size-1,
 		i,  {
 			X[i] += A[i] * B[i];
 		},
 		vi,  {
-			X.atv(vi).v += A.atv(vi).v * B.atv(vi).v;
+			X.atV(vi) += A.atV(vi) * B.atV(vi);
 		}
 	)
 /**/
@@ -200,7 +202,7 @@ void calculateVarray(size_t size){
 		X[i] += A[i] * B[i];
 	}
 	for (size_t vi = beginVI/A.vecN(); vi < endVecIndex; ++vi) {
-		X.atv(vi).v += A.atv(vi).v * B.atv(vi).v;
+		X.atV(vi) += A.atV(vi) * B.atV(vi);
 	}
 	for (size_t i = endVecIndex*A.vecN(); i <= endI; ++i) {
 		X[i] += A[i] * B[i];
@@ -214,7 +216,7 @@ void calculateVarray(size_t size){
 	}
 	for (size_t vi = A.beginVI(startI)/A.vecN();
 	vi < A.endVI(endI); ++vi) {
-		X.atv(vi).v += A.atv(vi).v * B.atv(vi).v;
+		X.atV(vi) += A.atV(vi) * B.atV(vi);
 	}
 	for (size_t i = A.endVI(endI)*A.vecN(); i <= endI; ++i) {
 		X[i] += A[i] * B[i];

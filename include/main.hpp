@@ -27,12 +27,20 @@ Description
 	#define LIKWID_MARKER_GET(regionTag, nevents, events, time, count)
 #endif
 
-#include "varray.hpp"
+#ifndef GMVECTOR
+	#include "varray.hpp"
+	using numVector = gm::varray<double>;
+#else
+	#include "vector.hpp"
+	using numVector = gm::vector<double>;
+#endif
+
 //#include "Matrix.hpp"
 #include "Chronometer.hpp"
 
 #include "io.hpp"
 #include "Logger.hpp"
+
 
 
 
